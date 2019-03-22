@@ -1,0 +1,124 @@
+
+public class DeliveryFragment extends AppBaseFragment implements View.OnClickListener, GenericRecyclerViewAdapter.GenericRecyclerViewAdapterBridge {
+
+
+    private ImageView ivBack;
+    private BaseTextView tvTitle;
+    private ImageView ivShare;
+    private RelativeViewLayout viewLayout;
+
+    public DeliveryFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onBackPress(int fragmentCount) {
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_delivery, container, false);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ivBack:
+                getActivity().onBackPressed();
+                break;
+        }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        findViews(view);
+        setView();
+        onRefresh();
+    }
+
+    private void setView() {
+        GenericRecyclerViewAdapter genericRecyclerViewAdapter = new GenericRecyclerViewAdapter<>("A", getActivity(), PreferenceManager.getInstance().getHomeResponse().getProduct(), this);
+        rvAddress.setLayoutManager(new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false));
+        rvAddress.setAdapter(genericRecyclerViewAdapter);
+    }
+
+
+    @Override
+    public void onRefresh() {
+
+    }
+
+    private AppBaseRecyclerView rvAddress;
+    private BaseButton btnAdd;
+
+    private void findViews(View rootView) {
+        viewLayout = rootView.findViewById(R.id.viewLayout);
+        ivBack = (ImageView) rootView.findViewById(R.id.ivBack);
+        tvTitle = (BaseTextView) rootView.findViewById(R.id.tvTitle);
+        ivShare = (ImageView) rootView.findViewById(R.id.ivShare);
+
+        rvAddress = (AppBaseRecyclerView)rootView.findViewById( R.id.rvAddress );
+        btnAdd = (BaseButton)rootView.findViewById( R.id.btnAdd );
+
+        btnAdd.setOnClickListener( this );
+
+        tvTitle.setText(getString(R.string.shipping_address));
+        ivBack.setOnClickListener(this);
+    }
+
+    @Override
+    public GenericViewHolder createViewHolder(View view, String adapterTag, int layoutId, GenericRecyclerViewAdapter genericRecyclerViewAdapter) {
+        return new DeliveryViewHolder(view, genericRecyclerViewAdapter);
+    }
+
+    @Override
+    public int getLayoutId(int position, String adapterTag) {
+        return R.layout.rv_category_item;
+    }
+
+    @Override
+    public void onViewHolderClick(String adapterTag, int action, int position, GenericViewHolder viewHolder) {
+
+    }
+    
+    
+    public class DeliveryViewHolder extends GenericViewHolder {
+
+    private ImageView ivIntro;
+    private TextView tvTitle;
+
+    public DeliveryViewHolder(View view, GenericRecyclerViewAdapter genericRecyclerViewAdapter) {
+        super(view, genericRecyclerViewAdapter);
+    }
+
+    @Override
+    public void findViews(View rootView) {
+        ivIntro =  rootView.findViewById(R.id.ivBanner);
+        tvTitle=rootView.findViewById(R.id.tvTitle);
+    }
+
+    @Override
+    public void onBind(int position) {
+        final Product item = (Product) genericRecyclerViewAdapter.getItem(position);
+
+        GlideHelper.loadFromUrl(genericRecyclerViewAdapter.getContext(), AppUtil.getInstance().getImage(item.getImages(),item.getCategory_image()),R.drawable.placeholder,ivIntro);
+        tvTitle.setText(item.getName());
+    }
+
+    @Override
+    public void onDetached() {
+
+    }
+
+    @Override
+    public void onViewRecycled() {
+
+    }
+
+
+}
+}
